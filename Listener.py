@@ -18,7 +18,8 @@ class Listener:
                     self.arduino = serial.Serial(poort.device,9600,timeout=.1)
                     time.sleep(2)
                     break
-                except serial.SerialException:
+                except serial.SerialException as e:
+                    print(f"Kon {poort.device} niet openen: {e}")
                     continue
 
     def __del__(self):
@@ -35,10 +36,7 @@ class Listener:
             if current != self.last_state:
                 self.last_state = current
                 print("STATE CHANGE:", current)
-                try:
-                    await self.stuurData()
-                except serial.SerialException as e:
-                    print(f"ERROR: {e}")
+                await self.stuurData()
 
 
     async def start(self):
@@ -47,4 +45,31 @@ class Listener:
             await asyncio.Future() # run forever
 
     async def stuurData(self):
-        self.arduino.write(bytes(str(self.last_state),"utf-8"))
+        if self.arduino is None:
+            print("Arduino niet verbonden, opnieuw proberen...")
+            if not self.reconnect_arduino():
+                print("Geen Arduino gevonden!")
+                return
+
+        try:
+            self.arduino.write(bytes(str(self.last_state) + "\n", "utf-8"))
+        except serial.SerialException:
+            print("Arduino verbinding verloren! Probeer opnieuw te verbinden...")
+            self.arduino = None
+            self.reconnect_arduino()
+
+    def reconnect_arduino(self):
+        poorten = serial.tools.list_ports.comports()
+        for poort in poorten:
+            if "Arduino" in poort.description or "USB" in poort.description or "Serial" in poort.description:
+                try:
+                    print(f"Arduino opnieuw gevonden op {poort.device}. Verbinden...")
+                    self.arduino = serial.Serial(poort.device, 9600, timeout=.1)
+                    time.sleep(2)
+                    return True
+                except serial.SerialException:
+                    continue
+        return False
+
+
+

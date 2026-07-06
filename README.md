@@ -64,16 +64,17 @@ Je hebt **geen PyCharm of IDE** nodig om het project te draaien.
 ## 📜 Dependencies
 
 De Python‑kant gebruikt:
-
+```text
 websockets
 pyserial
+```
 
 Deze worden automatisch geïnstalleerd via `run.bat`.
 
 ---
 
 ## 📂 Projectstructuur
-
+```text
 SoundListenerToARDUINO/
 │
 ├── Listener.py
@@ -88,6 +89,7 @@ SoundListenerToARDUINO/
 │
 ├── Arduino/
     ├── sound_listener.cpp   ← copy‑paste voor Arduino IDE
+```
 
 
 ---

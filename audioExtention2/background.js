@@ -2,6 +2,7 @@ let ws = null;
 let lastState = null;
 
 function connectWS() {
+
     if (ws && (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING)) {
         return;
     }
@@ -19,6 +20,13 @@ function connectWS() {
     ws.onerror = (e) => {
         console.log("WebSocket fout:", e);
     };
+    ws.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+    if (data.type === "ping") {
+        // beantwoord de ping; ontvangen hiervan houdt de worker wakker
+        ws.send(JSON.stringify({ type: "pong" }));
+    }
+};
 }
 
 function sendState(isPlaying) {

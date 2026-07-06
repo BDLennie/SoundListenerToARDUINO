@@ -29,14 +29,31 @@ class Listener:
             pass
 
     async def handler(self, ws):
-        async for msg in ws:
-            data = json.loads(msg)
-            current = data["isPlaying"]
+        # start een taak die deze client wakker houdt
+        ping_task = asyncio.create_task(self.keep_alive(ws))
+        try:
+            async for msg in ws:
+                data = json.loads(msg)
 
-            if current != self.last_state:
-                self.last_state = current
-                print("STATE CHANGE:", current)
-                await self.stuurData()
+                # negeer pong-antwoorden van de extensie
+                if data.get("type") == "pong":
+                    continue
+
+                current = data["isPlaying"]
+                if current != self.last_state:
+                    self.last_state = current
+                    print("STATE CHANGE:", current)
+                    await self.stuurData()
+        finally:
+            ping_task.cancel()
+
+    async def keep_alive(self, ws):
+        try:
+            while True:
+                await asyncio.sleep(5)
+                await ws.send(json.dumps({"type": "ping"}))
+        except (websockets.ConnectionClosed, asyncio.CancelledError):
+            pass
 
 
     async def start(self):

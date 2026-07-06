@@ -55,7 +55,7 @@ Dubbelklik hierop. Het script:
 
 - controleert of Python is geïnstalleerd  
 - installeert automatisch de benodigde packages  
-- start de listener (`Listener.py`)
+- start de listener via Main (`Main.py`)
 
 Je hebt **geen PyCharm of IDE** nodig om het project te draaien.
 

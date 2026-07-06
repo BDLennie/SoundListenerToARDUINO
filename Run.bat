@@ -12,4 +12,4 @@ REM 2. Installeer requirements
 pip install -r requirements.txt
 
 REM 3. Run jouw script
-python Listener.py
+python Main.py

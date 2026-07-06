@@ -1,16 +1,10 @@
 {
   "manifest_version": 3,
-  "name": "Audio Listener",
-  "version": "1.0.0",
-  "description": "Detecteerd of een tab audio geeft of niet.",
+  "name": "SimpleTabAudioDetector",
+  "description": "Detects if a tab wishes to send audio.",
+  "version": "1.1",
   "permissions": ["tabs"],
   "background": {
     "service_worker": "background.js"
-  },
-  "content_scripts": [
-    {
-      "matches": ["<all_urls>"],
-      "js": ["content.js"]
-    }
-  ]
+  }
 }

@@ -5,6 +5,7 @@ int relayPin = 7;
 void setup() {
   Serial.begin(9600);
   pinMode(relayPin,OUTPUT);
+  digitalWrite(relayPin,LOW)
 }
 
 void loop() {

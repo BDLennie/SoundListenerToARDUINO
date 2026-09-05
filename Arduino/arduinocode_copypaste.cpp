@@ -1,11 +1,14 @@
 bool sound = false;
+bool prevState = false;   // tracks previous "True"/not-"True" state
 String tempRead;
 int relayPin = 7;
+unsigned long lastTime = 0;
+const long duration = 2000;
 
 void setup() {
   Serial.begin(9600);
-  pinMode(relayPin,OUTPUT);
-  digitalWrite(relayPin,LOW);
+  pinMode(relayPin, OUTPUT);
+  digitalWrite(relayPin, LOW);
 }
 
 void loop() {
@@ -13,12 +16,21 @@ void loop() {
     tempRead = Serial.readStringUntil('\n');
     tempRead.trim();
 
-    if (tempRead == "True") {
+    bool currentState = (tempRead == "True");
+
+    // Only trigger on the rising edge (transition into "True")
+    if (currentState && !prevState) {
       sound = true;
-    } else if (tempRead == "False") {
-      sound = false;
+      lastTime = millis();
     }
 
-    digitalWrite(relayPin, sound ? HIGH : LOW);
+    prevState = currentState;
   }
+
+  // Runs every loop, regardless of whether serial data arrived
+  if (sound && (millis() - lastTime >= duration)) {
+    sound = false;
+  }
+
+  digitalWrite(relayPin, sound ? HIGH : LOW);
 }

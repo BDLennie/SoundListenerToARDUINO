@@ -1,10 +1,10 @@
 bool sound = false;
 String tempRead;
+int relayPin = 7;
 
 void setup() {
   Serial.begin(9600);
-  pinMode(LED_BUILTIN, OUTPUT);
-  pinMode(13,OUTPUT);
+  pinMode(relayPin,OUTPUT);
 }
 
 void loop() {
@@ -18,7 +18,6 @@ void loop() {
       sound = false;
     }
 
-    digitalWrite(LED_BUILTIN, sound ? HIGH : LOW);
-    digitalWrite(13, sound ? HIGH : LOW);
+    digitalWrite(relayPin, sound ? HIGH : LOW);
   }
 }

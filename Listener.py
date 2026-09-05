@@ -52,6 +52,7 @@ class Listener:
             while True:
                 await asyncio.sleep(5)
                 await ws.send(json.dumps({"type": "ping"}))
+                await self.stuurData()
         except (websockets.ConnectionClosed, asyncio.CancelledError):
             pass
 
